@@ -6,6 +6,7 @@ const VideosPage = () => {
   const [videoUrl, setVideoUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,6 +22,7 @@ const VideosPage = () => {
     setIsLoading(true);
     setError("");
     setVideoUrl("");
+    setSuccessMessage("");
     try {
       // 1. Generate the script using the LLM API (same as before)
       console.log("Generating Manim script for topic:", topic);
@@ -63,6 +65,7 @@ const VideosPage = () => {
           const fullVideoUrl = `http://127.0.0.1:8000${renderData.videoUrl}`;
           console.log("Setting video URL:", fullVideoUrl);
           setVideoUrl(fullVideoUrl);
+          setSuccessMessage("Video generated successfully! 🎉");
         } else if (renderData.error) {
           setError(`Render error: ${renderData.error}`);
         } else {
@@ -83,6 +86,18 @@ const VideosPage = () => {
 
   const handleVideoError = () => {
     setError("Failed to load video. Please try again.");
+  };
+
+  const handleDownload = () => {
+    if (videoUrl) {
+      // Create a temporary anchor element to trigger download
+      const link = document.createElement('a');
+      link.href = videoUrl;
+      link.download = `${topic.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_video.mp4`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
   };
 
   return (
@@ -135,14 +150,21 @@ const VideosPage = () => {
           {error && (
             <div className="text-red-600 text-sm mt-2" role="alert">{error}</div>
           )}
+          {successMessage && (
+            <div className="text-green-600 text-sm mt-2 font-medium" role="alert">{successMessage}</div>
+          )}
         </div>
         {/* Right: Sample video card */}
         <div className="flex-1 max-w-md w-full">
           <div className="relative bg-white rounded-2xl shadow-xl p-6 flex flex-col gap-4 border border-purple-100">
             <span className="absolute -top-4 left-4 bg-purple-100 text-purple-700 text-xs font-semibold px-3 py-1 rounded-full shadow">AI Video</span>
             <div className="mb-2">
-              <span className="block text-sm font-semibold text-gray-700 mb-1">Sample Video</span>
-              <span className="block text-xs text-gray-400">Topic: The Water Cycle</span>
+              <span className="block text-sm font-semibold text-gray-700 mb-1">
+                {videoUrl && topic ? 'Generated Video' : 'Sample Video'}
+              </span>
+              <span className="block text-xs text-gray-400">
+                Topic: {videoUrl && topic ? topic : 'The Water Cycle'}
+              </span>
             </div>
             <div className="rounded-lg overflow-hidden border border-purple-200 bg-purple-50">
               <video
@@ -159,6 +181,19 @@ const VideosPage = () => {
               <span className="text-xs text-purple-700 font-medium">Instant Video</span>
               <span className="text-xs text-gray-400">~30 sec</span>
             </div>
+            {videoUrl && !isLoading && (
+              <button
+                onClick={handleDownload}
+                className="mt-3 w-full bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg px-4 py-2 transition-colors focus:outline-none focus:ring-2 focus:ring-green-400 flex items-center justify-center gap-2"
+                aria-label="Download video"
+                tabIndex={0}
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Download Video
+              </button>
+            )}
             {isLoading && (
               <div className="flex items-center justify-center mt-2" aria-live="polite">
                 <span className="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-600"></span>
