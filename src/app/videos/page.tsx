@@ -36,7 +36,7 @@ const VideosPage = () => {
       } else if (data.error) {
         setError(data.error);
       }
-    } catch (err) {
+    } catch {
       setError("Failed to generate video. Please try again.");
     } finally {
       setIsLoading(false);

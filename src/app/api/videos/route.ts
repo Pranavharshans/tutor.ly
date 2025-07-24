@@ -76,9 +76,11 @@ Constraints:
     /* ------------------------------------------------------------------ */
     return NextResponse.json({ videoUrl, manimScript }, { status: 200 });
 
-  } catch (err: any) {
+  } catch (err: unknown) {
+    let message = 'Unexpected server error';
+    if (err instanceof Error) message = err.message;
     return NextResponse.json(
-      { error: 'Unexpected server error', details: err?.message },
+      { error: message },
       { status: 500 }
     );
   }
