@@ -38,13 +38,30 @@ async def render(request: Request):
         logger.info(f"Script length: {len(script)} characters")
         logger.info(f"Script preview: {script[:200]}...")
 
+        # Clean the script - remove markdown code fences and extra whitespace
+        cleaned_script = script.strip()
+        
+        # Remove markdown code blocks if present
+        if cleaned_script.startswith('```python'):
+            cleaned_script = cleaned_script.replace('```python', '').strip()
+        if cleaned_script.startswith('```'):
+            cleaned_script = cleaned_script.replace('```', '').strip()
+        if cleaned_script.endswith('```'):
+            cleaned_script = cleaned_script.rstrip('```').strip()
+            
+        # Ensure the script has proper imports if missing
+        if 'from manim import *' not in cleaned_script and 'import manim' not in cleaned_script:
+            cleaned_script = 'from manim import *\n\n' + cleaned_script
+            
+        logger.info(f"Cleaned script preview: {cleaned_script[:200]}...")
+
         # Save script to file
         script_id = str(uuid.uuid4())
         script_path = f"/tmp/{script_id}.py"
         
         logger.info(f"Saving script to: {script_path}")
         with open(script_path, "w") as f:
-            f.write(script)
+            f.write(cleaned_script)
 
         # Run Manim
         output_file = f"{script_id}.mp4"
