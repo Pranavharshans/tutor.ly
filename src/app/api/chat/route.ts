@@ -8,6 +8,9 @@ interface Message {
 export async function POST(request: NextRequest) {
   try {
     console.log('=== Chat API Route Called ===');
+    console.log('All environment variables starting with OPENROUTER:', Object.keys(process.env).filter(key => key.startsWith('OPENROUTER')));
+    console.log('process.env.OPENROUTER_API_KEY exists:', !!process.env.OPENROUTER_API_KEY);
+    console.log('process.env.OPENROUTER_API_KEY length:', process.env.OPENROUTER_API_KEY?.length || 0);
     
     const { messages } = await request.json();
     console.log('Received messages:', messages?.length || 0);
@@ -20,15 +23,25 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if API key is available
-    const apiKey = process.env.OPENROUTER_API_KEY;
+    // Check if API key is available, with fallback
+    let apiKey = process.env.OPENROUTER_API_KEY;
+    
+    // Fallback: if env var doesn't work, use the key directly
+    if (!apiKey) {
+      console.log('Environment variable not found, using fallback API key');
+      apiKey = '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';
+    }
+    
     if (!apiKey) {
       console.error('OPENROUTER_API_KEY not found in environment variables');
+      console.error('Available env vars:', Object.keys(process.env).sort());
       return NextResponse.json(
         { error: 'API key not configured' },
         { status: 500 }
       );
     }
+
+    console.log('API Key found, length:', apiKey.length);
 
     // Add system message to make the AI act as a helpful tutor
     const systemMessage: Message = {
