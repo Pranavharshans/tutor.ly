@@ -50,10 +50,12 @@ Constraints:
     }
 
     /* ------------------------------------------------------------------ */
-    /* 2.  SEND SCRIPT TO RENDER.COM WORKER                               */
+    /* 2.  SEND SCRIPT TO LOCAL BACKEND WORKER                            */
     /* ------------------------------------------------------------------ */
-    const renderWorkerURL = process.env.RENDER_WORKER_URL ?? 'https://your-render-worker.onrender.com/render';
+    const renderWorkerURL = process.env.LOCAL_RENDER_URL ?? 'http://127.0.0.1:8000/render';
 
+    console.log('Sending script to local backend:', renderWorkerURL);
+    
     const renderResp = await fetch(renderWorkerURL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -62,19 +64,26 @@ Constraints:
 
     if (!renderResp.ok) {
       const err = await renderResp.text();
-      return NextResponse.json({ error: `Render worker error: ${err}` }, { status: 502 });
+      console.error('Local backend error:', err);
+      return NextResponse.json({ error: `Local backend error: ${err}` }, { status: 502 });
     }
 
-    const { videoUrl } = await renderResp.json();
+    const renderData = await renderResp.json();
+    console.log('Local backend response:', renderData);
+    
+    const { videoUrl } = renderData;
 
     if (!videoUrl) {
-      return NextResponse.json({ error: 'No videoUrl from worker', manimScript }, { status: 500 });
+      return NextResponse.json({ error: 'No videoUrl from local backend', manimScript }, { status: 500 });
     }
+
+    // Convert relative URL to full URL for the local backend
+    const fullVideoUrl = videoUrl.startsWith('http') ? videoUrl : `http://127.0.0.1:8000${videoUrl}`;
 
     /* ------------------------------------------------------------------ */
     /* 3.  RETURN VIDEO URL AND SCRIPT TO FRONT-END                       */
     /* ------------------------------------------------------------------ */
-    return NextResponse.json({ videoUrl, manimScript }, { status: 200 });
+    return NextResponse.json({ videoUrl: fullVideoUrl, manimScript }, { status: 200 });
 
   } catch (err: unknown) {
     let message = 'Unexpected server error';
