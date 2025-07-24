@@ -64,7 +64,7 @@ Always maintain a friendly, encouraging tone and focus on helping the student tr
     console.log('Sending to OpenRouter with', apiMessages.length, 'messages');
 
     const requestBody = {
-      model: 'qwen/qwen3-32b',
+      model: 'meta-llama/llama-3.1-405b-instruct',
       messages: apiMessages,
       provider: {
         order: ['groq'],
