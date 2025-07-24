@@ -71,7 +71,7 @@ Always maintain a friendly, encouraging tone and focus on helping the student tr
         allow_fallbacks: false
       },
       temperature: 0.7,
-      max_tokens: 2000,
+      max_tokens: 8192,
       top_p: 0.9,
     };
 

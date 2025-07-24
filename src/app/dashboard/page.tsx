@@ -99,16 +99,14 @@ export default function Dashboard() {
               <div className="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-purple-200 transition-colors">
                 <Play className="w-8 h-8 text-purple-600" />
               </div>
-              
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Video Library</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Videos</h3>
               <p className="text-gray-600 mb-6 leading-relaxed">
-                Generate personalized video explanations. Visual learning made just for you.
+                Generate and watch educational videos on any topic. Visualize concepts and learn interactively.
               </p>
-              
               <div className="flex items-center justify-between">
                 <div className="text-sm text-gray-500">
-                  <div>New video:</div>
-                  <div className="font-medium text-gray-700">Physics - Forces</div>
+                  <div>New!</div>
+                  <div className="font-medium text-purple-700">Try video generation</div>
                 </div>
                 <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-purple-600 group-hover:translate-x-1 transition-all" />
               </div>
