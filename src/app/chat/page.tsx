@@ -62,11 +62,22 @@ export default function ChatPage() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to get response');
+        const errorText = await response.text();
+        console.error('API Response Error:', {
+          status: response.status,
+          statusText: response.statusText,
+          error: errorText
+        });
+        throw new Error(`API Error (${response.status}): ${errorText}`);
       }
 
       const data = await response.json();
       
+      if (!data.content) {
+        console.error('Invalid API response:', data);
+        throw new Error('No content received from API');
+      }
+
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
@@ -76,11 +87,11 @@ export default function ChatPage() {
 
       setMessages(prev => [...prev, assistantMessage]);
     } catch (error) {
-      console.error('Error sending message:', error);
+      console.error('Chat Error Details:', error);
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: "Sorry, I'm having trouble connecting right now. Please try again in a moment.",
+        content: `Sorry, I encountered an error: ${error instanceof Error ? error.message : 'Unknown error'}. Please check the console for details and try again.`,
         timestamp: new Date()
       };
       setMessages(prev => [...prev, errorMessage]);
