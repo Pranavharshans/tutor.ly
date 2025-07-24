@@ -23,29 +23,69 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Use Groq API
-    let apiKey = process.env.GROQ_API_KEY;
+    // Check if API key is available, with fallback
+    let apiKey = process.env.OPENROUTER_API_KEY;
+    
+    // Fallback: if env var doesn't work, use the key directly
+    if (!apiKey) {
+      console.log('Environment variable not found, using fallback API key');
+      apiKey = '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';
+    }
     
     if (!apiKey) {
-      console.error('GROQ_API_KEY not found');
-      return NextResponse.json({ error: 'Groq API key not configured' }, { status: 500 });
+      console.error('OPENROUTER_API_KEY not found in environment variables');
+      console.error('Available env vars:', Object.keys(process.env).sort());
+      return NextResponse.json(
+        { error: 'API key not configured' },
+        { status: 500 }
+      );
     }
 
-    const systemMessage = {
+    console.log('API Key found, length:', apiKey.length);
+
+    // Add system message to make the AI act as a helpful tutor
+    const systemMessage: Message = {
       role: 'system',
-      content: 'You are a helpful AI tutor that provides educational assistance, explanations, and guidance to students.'
+      content: `You are an AI tutor designed to help students learn effectively. Your role is to:
+
+1. Provide clear, educational explanations on any topic
+2. Break down complex concepts into simple, understandable parts
+3. Use examples and analogies to make learning easier
+4. Encourage critical thinking by asking follow-up questions
+5. Be patient, supportive, and motivating
+6. Adapt your teaching style to the student's level of understanding
+7. Provide step-by-step solutions when needed
+8. Suggest additional resources or practice when appropriate
+
+Always maintain a friendly, encouraging tone and focus on helping the student truly understand the material rather than just giving answers.`
     };
 
-    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    const apiMessages = [systemMessage, ...messages];
+    console.log('Sending to OpenRouter with', apiMessages.length, 'messages');
+
+    const requestBody = {
+      model: 'qwen/qwen3-32b',
+      messages: apiMessages,
+      provider: {
+        order: ['groq'],
+        allow_fallbacks: false
+      },
+      temperature: 0.7,
+      max_tokens: 2000,
+      top_p: 0.9,
+    };
+
+    console.log('Request body:', JSON.stringify(requestBody, null, 2));
+
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'HTTP-Referer': process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
+        'X-Title': 'tutor.ly',
       },
-      body: JSON.stringify({
-        model: 'llama-3.1-405b-reasoning',
-        messages: [systemMessage, ...messages]
-      })
+      body: JSON.stringify(requestBody),
     });
 
     console.log('OpenRouter response status:', response.status);
