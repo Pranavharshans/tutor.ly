@@ -1,4 +1,5 @@
 import { MessageCircle, Zap, Video, BookOpen, Users, GraduationCap, ArrowRight, Check, TrendingUp, Clock, Award, Sparkles, Twitter, Facebook, Instagram, Linkedin, Mail, Star, Play } from "lucide-react";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -47,10 +48,12 @@ export default function Home() {
                 Get instant help from your AI tutor, turn any text into flashcards, and watch personalized videos when you're stuck. Everything you need to ace your exams.
               </p>
               <div className="mt-8 sm:max-w-lg sm:mx-auto sm:text-center lg:text-left lg:mx-0">
-                <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-8 rounded-lg text-lg transition-colors inline-flex items-center">
-                  Try it free
-                  <ArrowRight className="ml-2 w-5 h-5" />
-                </button>
+                <Link href="/dashboard">
+                  <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-8 rounded-lg text-lg transition-colors inline-flex items-center">
+                    Try it free
+                    <ArrowRight className="ml-2 w-5 h-5" />
+                  </button>
+                </Link>
               </div>
             </div>
             <div className="mt-12 relative sm:max-w-lg sm:mx-auto lg:mt-0 lg:max-w-none lg:mx-0 lg:col-span-6 lg:flex lg:items-center">
@@ -243,9 +246,11 @@ export default function Home() {
             Join students who are improving their grades with AI-powered learning
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors">
-              Get started for free
-            </button>
+            <Link href="/dashboard">
+              <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors">
+                Get started for free
+              </button>
+            </Link>
             <button className="border border-gray-300 text-gray-700 hover:bg-gray-50 font-semibold py-3 px-6 rounded-lg transition-colors">
               Learn more
             </button>
