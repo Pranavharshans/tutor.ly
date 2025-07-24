@@ -75,6 +75,33 @@ export default function Flashcards() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <style jsx>{`
+        .flip-card {
+          perspective: 1000px;
+        }
+        .flip-card-inner {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          text-align: center;
+          transition: transform 0.7s;
+          transform-style: preserve-3d;
+        }
+        .flip-card.flipped .flip-card-inner {
+          transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
+        }
+        .flip-card-back {
+          transform: rotateY(180deg);
+        }
+      `}</style>
+
       {/* Navigation */}
       <nav className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -210,16 +237,16 @@ export default function Flashcards() {
             <div className="relative">
               {/* Main Flashcard */}
               <div
-                className="relative w-full h-96 perspective-1000 cursor-pointer select-none mx-auto max-w-2xl"
+                className={`flip-card w-full h-96 cursor-pointer select-none mx-auto max-w-2xl ${isFlipped ? 'flipped' : ''}`}
                 onClick={handleFlip}
                 onKeyDown={handleKeyDown}
                 tabIndex={0}
                 role="button"
                 aria-label="Flip flashcard"
               >
-                <div className={`absolute inset-0 transition-transform duration-700 preserve-3d ${isFlipped ? 'rotate-y-180' : ''}`}>
+                <div className="flip-card-inner">
                   {/* Front */}
-                  <div className="absolute inset-0 backface-hidden">
+                  <div className="flip-card-front">
                     <div className="h-full bg-gradient-to-br from-green-50 to-emerald-100 rounded-3xl shadow-2xl border border-green-200 flex items-center justify-center p-8 relative overflow-hidden">
                       <div className="absolute -top-8 -right-8 w-32 h-32 bg-green-200 rounded-full opacity-20"></div>
                       <div className="absolute -bottom-8 -left-8 w-40 h-40 bg-emerald-300 rounded-full opacity-10"></div>
@@ -235,7 +262,7 @@ export default function Flashcards() {
                   </div>
                   
                   {/* Back */}
-                  <div className="absolute inset-0 backface-hidden rotate-y-180">
+                  <div className="flip-card-back">
                     <div className="h-full bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl shadow-2xl border border-blue-200 flex items-center justify-center p-8 relative overflow-hidden">
                       <div className="absolute -top-8 -right-8 w-32 h-32 bg-blue-200 rounded-full opacity-20"></div>
                       <div className="absolute -bottom-8 -left-8 w-40 h-40 bg-blue-300 rounded-full opacity-10"></div>
