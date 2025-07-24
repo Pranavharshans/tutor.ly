@@ -64,10 +64,10 @@ Always maintain a friendly, encouraging tone and focus on helping the student tr
     console.log('Sending to OpenRouter with', apiMessages.length, 'messages');
 
     const requestBody = {
-      model: 'meta-llama/llama-3.1-405b-instruct',
+      model: 'meta-llama/llama-4-maverick',
       messages: apiMessages,
       provider: {
-        order: ['groq'],
+        order: ['cerebras'],
         allow_fallbacks: false
       },
       temperature: 0.7,
