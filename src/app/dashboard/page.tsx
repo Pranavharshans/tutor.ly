@@ -1,6 +1,6 @@
 "use client";
 
-import { Brain, Zap, Play, Search, GraduationCap, MessageSquare, ArrowRight, Clock, BookOpen, Timer, Users, TrendingUp, Star } from "lucide-react";
+import { Zap, Play, GraduationCap, MessageSquare, ArrowRight, Clock, TrendingUp, Star } from "lucide-react";
 import Link from "next/link";
 
 export default function Dashboard() {
@@ -28,7 +28,7 @@ export default function Dashboard() {
         {/* Welcome */}
         <div className="mb-12">
           <h1 className="text-3xl font-bold text-gray-900 mb-3">Welcome back, Sarah</h1>
-          <p className="text-gray-600 mb-8">Ready to learn something new today? Choose where you'd like to start.</p>
+          <p className="text-gray-600 mb-8">Ready to learn something new today? Choose where you&apos;d like to start.</p>
           
           {/* Quick Stats */}
           <div className="flex items-center space-x-8 text-sm text-gray-500 mb-8">
@@ -162,7 +162,7 @@ export default function Dashboard() {
           <div className="bg-white rounded-xl p-6 border border-gray-200">
             <h3 className="text-lg font-semibold text-gray-900 mb-6 flex items-center">
               <Star className="w-5 h-5 mr-2 text-yellow-500" />
-              This Week's Goals
+              This Week&apos;s Goals
             </h3>
             
             <div className="space-y-4">

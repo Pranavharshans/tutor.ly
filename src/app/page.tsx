@@ -1,4 +1,4 @@
-import { MessageCircle, Zap, Video, BookOpen, Users, GraduationCap, ArrowRight, Check, TrendingUp, Clock, Award, Sparkles, Twitter, Facebook, Instagram, Linkedin, Mail, Star, Play } from "lucide-react";
+import { MessageCircle, Zap, Video, GraduationCap, ArrowRight, Clock, Sparkles, Twitter, Facebook, Instagram, Linkedin, Mail } from "lucide-react";
 import Link from "next/link";
 
 export default function Home() {
@@ -45,7 +45,7 @@ export default function Home() {
                 <span className="block text-blue-600">with AI by your side</span>
               </h1>
               <p className="mt-3 text-base text-gray-500 sm:mt-5 sm:text-xl lg:text-lg xl:text-xl">
-                Get instant help from your AI tutor, turn any text into flashcards, and watch personalized videos when you're stuck. Everything you need to ace your exams.
+                Get instant help from your AI tutor, turn any text into flashcards, and watch personalized videos when you&apos;re stuck. Everything you need to ace your exams.
               </p>
               <div className="mt-8 sm:max-w-lg sm:mx-auto sm:text-center lg:text-left lg:mx-0">
                 <Link href="/dashboard">
@@ -80,7 +80,7 @@ export default function Home() {
                 
                 {/* Main Card */}
                 <div className="relative bg-white rounded-lg p-6 shadow-xl z-10">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Today's Learning</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Today&apos;s Learning</h3>
                   <div className="space-y-3">
                     <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
                       <div className="flex items-center space-x-3">

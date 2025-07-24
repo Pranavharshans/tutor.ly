@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -20,19 +20,21 @@ export function PlaceholdersAndVanishInput({
   const [animating, setAnimating] = useState(false);
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const startAnimation = () => {
+  
+  const startAnimation = useCallback(() => {
     intervalRef.current = setInterval(() => {
       setCurrentPlaceholder((prev) => (prev + 1) % placeholders.length);
     }, 3000);
-  };
-  const handleVisibilityChange = () => {
+  }, [placeholders.length]);
+
+  const handleVisibilityChange = useCallback(() => {
     if (document.visibilityState !== "visible" && intervalRef.current) {
       clearInterval(intervalRef.current); // Clear the interval when the tab is not visible
       intervalRef.current = null;
     } else if (document.visibilityState === "visible") {
       startAnimation(); // Restart the interval when the tab becomes visible
     }
-  };
+  }, [startAnimation]);
 
   useEffect(() => {
     startAnimation();
@@ -44,10 +46,10 @@ export function PlaceholdersAndVanishInput({
       }
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, []);
+  }, [handleVisibilityChange, startAnimation]);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const newDataRef = useRef<any[]>([]);
+  const newDataRef = useRef<Uint8ClampedArray | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [inputWidth, setInputWidth] = useState(0);
   const [inputHeight, setInputHeight] = useState(0);
@@ -72,7 +74,6 @@ export function PlaceholdersAndVanishInput({
 
     // Calculate text padding from input
     const paddingLeft = parseFloat(computedStyles.paddingLeft);
-    const paddingTop = parseFloat(computedStyles.paddingTop);
 
     ctx.fillText(
       placeholders[currentPlaceholder],
@@ -98,8 +99,6 @@ export function PlaceholdersAndVanishInput({
 
     const value = inputRef.current?.value || "";
     if (value && inputRef.current) {
-      const maxX = newDataRef.current.length / 4;
-      
       // Clear the input
       setValue("");
       inputRef.current.value = "";
@@ -107,7 +106,7 @@ export function PlaceholdersAndVanishInput({
 
       // Submit after a short delay
       setTimeout(() => {
-        onSubmit({ preventDefault: () => {} } as any);
+        onSubmit({ preventDefault: () => {} } as React.FormEvent<HTMLFormElement>);
         setAnimating(false);
       }, 300);
     }
@@ -127,7 +126,7 @@ export function PlaceholdersAndVanishInput({
   useEffect(() => {
     if (inputRef.current) {
       const resizeObserver = new ResizeObserver((entries) => {
-        for (let entry of entries) {
+        for (const entry of entries) {
           setInputWidth(entry.contentRect.width);
           setInputHeight(entry.contentRect.height);
         }
@@ -155,7 +154,9 @@ export function PlaceholdersAndVanishInput({
       <input
         onChange={(e) => {
           setValue(e.target.value);
-          onChange && onChange(e);
+          if (onChange) {
+            onChange(e);
+          }
         }}
         onKeyDown={handleKeyDown}
         ref={inputRef}
