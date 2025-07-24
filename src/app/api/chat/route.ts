@@ -44,10 +44,14 @@ Always maintain a friendly, encouraging tone and focus on helping the student tr
         'X-Title': 'tutor.ly',
       },
       body: JSON.stringify({
-        model: 'qwen/qwen-2.5-14b-instruct',
+        model: 'qwen/qwen3-32b',
         messages: apiMessages,
+        provider: {
+          order: ['groq'],
+          allow_fallbacks: false
+        },
         temperature: 0.7,
-        max_tokens: 1000,
+        max_tokens: 2000,
         top_p: 0.9,
       }),
     });
