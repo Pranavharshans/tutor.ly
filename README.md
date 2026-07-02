@@ -1,36 +1,83 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# tutor.ly
 
-## Getting Started
+AI-powered educational platform with three core features: an AI tutor chat, smart flashcard generation, and AI-generated animated educational videos.
 
-First, run the development server:
+## Features
+
+- **AI Tutor Chat** — Conversational AI tutor using OpenRouter API (LLaMA 4 Maverick via Cerebras) with Markdown rendering and multi-turn context
+- **Smart Flashcards** — Generate interactive flip-card study sets from any topic using Mistral Small 3.2 24B
+- **AI-Generated Videos** — Educational animations rendered by Manim from LLM-generated scripts via a FastAPI backend
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Frontend | Next.js 15, React 19, TypeScript, Tailwind CSS 4, Framer Motion |
+| Backend | Python FastAPI, Manim |
+| AI | OpenRouter API (LLaMA 4 Maverick, Mistral Small 3.2, Qwen 3 32B) |
+
+## Setup
+
+### Frontend
+
+```bash
+npm install
+```
+
+Create `.env.local`:
+```
+OPENROUTER_API_KEY=sk-or-...
+```
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The frontend starts at `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Backend (Video Rendering)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+cd backend
+pip install -r requirements.txt
+uvicorn app:app --port 8000
+```
 
-## Learn More
+The video rendering backend starts at `http://localhost:8000`.
 
-To learn more about Next.js, take a look at the following resources:
+## Usage
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Navigate to `http://localhost:3000`
+2. Go to **Dashboard** to access all three tools
+3. **AI Tutor**: Ask questions and get educational explanations
+4. **Flashcards**: Enter a topic and study with interactive flip-cards
+5. **Videos**: Enter a topic and watch a generated Manim animation
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project Structure
 
-## Deploy on Vercel
+```
+tutor.ly/
+├── src/
+│   ├── app/
+│   │   ├── page.tsx                # Landing page
+│   │   ├── dashboard/page.tsx      # Dashboard
+│   │   ├── chat/page.tsx           # AI Tutor chat
+│   │   ├── flashcards/page.tsx     # Flashcard generator and viewer
+│   │   ├── videos/page.tsx         # Video generation page
+│   │   └── api/
+│   │       ├── chat/route.ts       # Chat API route
+│   │       ├── flashcards/route.ts # Flashcard generation API
+│   │       └── videos/route.ts     # Video generation API
+│   ├── components/ui/              # UI components
+│   └── lib/utils.ts                # Utility helpers
+├── backend/
+│   ├── app.py                      # FastAPI server for Manim rendering
+│   └── requirements.txt
+├── package.json
+├── SETUP.md                        # Detailed setup guide
+└── tsconfig.json
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## API Keys
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project uses OpenRouter for AI inference. See [SETUP.md](SETUP.md) for detailed instructions on obtaining and configuring your API key.
